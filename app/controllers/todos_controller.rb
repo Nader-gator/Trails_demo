@@ -1,0 +1,2 @@
+class TodoController < ControllerBase
+end

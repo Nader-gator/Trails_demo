@@ -124,7 +124,7 @@ module Associations
           #{through_table}.#{through_foreign_key} = ?
       SQL
 
-      source_options.model_class.parse_all(results).first
+      source_options.model_class.parse_all(results)
     end
   end
 end
