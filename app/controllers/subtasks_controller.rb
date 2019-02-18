@@ -1,0 +1,2 @@
+class SubtasksController < ControllerBase
+end

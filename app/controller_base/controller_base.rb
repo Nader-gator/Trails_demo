@@ -23,7 +23,7 @@ class ControllerBase
     raise "Double render error" if self.already_built_response?
     self.response_built = true
     self.session.store_session(@res)
-
+    self.flash.store_flash(@res)
   end
 
   def redirect_to(url)
@@ -36,7 +36,6 @@ class ControllerBase
       self.redirect_response_prep
       @res.write(content)
       @res['Content-Type'] = content_type
-
     nil
   end
 
@@ -59,7 +58,7 @@ class ControllerBase
   def flash
     @flash ||= Flash.new(@req)
   end
-  
+
   def controller_name
     self.class.to_s.underscore
   end

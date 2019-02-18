@@ -7,17 +7,23 @@ require_relative 'RecordKeeper/record_keeper'
 require_relative 'app/models/user'
 require_relative 'app/models/todo'
 require_relative 'app/models/subtask'
+require_relative 'app/controllers/users_controller'
+require_relative 'app/controllers/todos_controller'
+require_relative 'app/controllers/subtasks_controller'
+require_relative 'app/controllers/sessions_controller'
+
+
 User.finalize!
 Todo.finalize!
 Subtask.finalize!
 
-# require_relative 'app/models/MODEL'
-# require_relative 'app/controllers/CONTROLLER'
 
 # router = Router.new
 
 # router.draw do
-#   # get Regexp.new("^/PATH-HERE$"), ControllerClass, :method
+#   get Regexp.new("^/$"), SessionsController, :index
+#   post Regexp.new("^/$"), SessionsController, :create
+#   delete Regexp.new("^/$"), SessionsController, :destroy
 #   # get Regexp.new("^/PATH-HERE/(?<id>\\d+)$"), ControllerClass,:method
 # end
 
