@@ -57,6 +57,7 @@ class ControllerBase
 
   def flash
     @flash ||= Flash.new(@req)
+    @flash
   end
 
   def controller_name

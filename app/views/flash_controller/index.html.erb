@@ -1,2 +1,36 @@
 <h1>Flash Controller Demo</h1>
-<h2>This Demo showcases Flash, which is a rails features for storing data in cookies temporarily, for either one or two response cycles</h2>
+<h2>This Demo showcases Flash, which is a rails features for storing data in cookies temporarily, for either one or two response cycles. This feature is generally used to display errors.</h2>
+
+<div class='flash-now'>
+<h3>This is the flash now Demo. Any message you type here will remain in the cookies for one request-response cycle</h3>
+  <form action="/flash" method='post'>
+    <label> Flash Now Message
+      <input type="text" name='message-now'>
+    </label>
+    <input type="submit">
+  </form>
+  <% if @now %>
+  <h4>Your Flash message</h4>
+  <p><%= @now %></p>
+  <% end %>
+  <a href="/flash">Refresh once to reset message</a>
+</div>
+
+<div class='flash'>
+<h3>This is the normal flash Demo. Any message you type here will remain in the cookies for two request-response cycles</h3>
+  <form action="/flash" method='post'>
+    <label> Flash Message
+      <input type="text" name='message'>
+    </label>
+    <input type="submit">
+  </form>
+  <% if @msg %>
+  <h4>Your Flash message</h4>
+  <p><%= @msg %></p>
+  <% end %>
+  <a href="/flash">Refresh twice to reset message</a>
+</div>
+
+<div>
+<h1>Source code</h1>
+</div>

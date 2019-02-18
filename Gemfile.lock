@@ -7,6 +7,7 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     bcrypt (3.1.12)
+    byebug (11.0.0)
     concurrent-ruby (1.1.4)
     i18n (1.5.3)
       concurrent-ruby (~> 1.0)
@@ -24,6 +25,7 @@ PLATFORMS
 DEPENDENCIES
   activesupport
   bcrypt
+  byebug
   puma
   rack
   sqlite3
