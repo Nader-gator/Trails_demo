@@ -24,6 +24,7 @@ router.draw do
   get Regexp.new("^/flash$"), FlashController, :index
   post Regexp.new("^/flash$"), FlashController, :create
   get Regexp.new("^/cookies$"), CookiesController, :index
+  post Regexp.new("^/cookies$"), CookiesController, :create
   # get Regexp.new("^/PATH-HERE/(?<id>\\d+)$"), ControllerClass,:method
 end
 

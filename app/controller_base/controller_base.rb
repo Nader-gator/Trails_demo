@@ -1,3 +1,4 @@
+require 'byebug'
 require 'active_support/inflector'
 require 'erb'
 require 'active_support' 

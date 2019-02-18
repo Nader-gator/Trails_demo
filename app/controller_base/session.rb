@@ -21,7 +21,7 @@ class Session
   end
 
   def store_session(res)
-    cookie = {path: '/', value: @cookie_data.to_json}
+    cookie = {path: '/cookies', value: @cookie_data.to_json,expires: Time.now+24*60*60*14}
     res.set_cookie("_Trails_app",cookie)
   end
 end
