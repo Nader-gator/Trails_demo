@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RecordKeeper Demo</title>
+  <link rel="stylesheet" href="assets/prism.css">
+  <script src='assets/prism.js'></script>
+</head>
+<body>
+  <h1>RecordKeeper Demo</h1>
+  <h2>This Demo showcases RecordKeepr, an independant project from Trails, RecordKeeper is a Ruby ORM for SQLite3</h2>
+
+  <h3>Here is the database schema for this demo</h3>
+  <pre style="width: 50%;">
+      <code class="language-sql">
+      CREATE TABLE users (
+        id INTEGER PRIMARY KEY,
+        name VARCHAR(255) NOT NULL
+      );
+
+      CREATE TABLE todos (
+        id INTEGER PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        body VARCHAR(255),
+        user_id INTEGER,
+
+        FOREIGN KEY(user_id) REFERENCES user(id)
+      );
+
+      CREATE TABLE subtasks (
+        id INTEGER PRIMARY KEY,
+        content VARCHAR(255) NOT NULL,
+        todo_id INTEGER,
+
+        FOREIGN KEY(todo_id) REFERENCES todos(id)
+      );
+      </code>
+    </pre>
+
+
+  <h3>This demo is a simple TODOs App, each TODO has a title and a body, and may have many subtasks. These subtasks have associations to User and TODOs.below is a snippet of code on how a new row is inserted and how belongs_to associations are made</h4>
+
+  <pre style="width: 50%;">
+      <code class="language-ruby">
+        #...record_keeper.rb
+      def insert
+        cols = self.class.columns[1..-1]
+        qmarks= (["?"]* cols.count).join(", ")
+        cols = cols.map(&:to_s).join(", ")
+        attributes = self.attribute_values[1..-1]
+
+        insert = DBConnection.execute(<<-SQL,*attributes)
+          INSERT INTO
+            #{self.class.table_name} (#{cols})
+          VALUES
+            (#{qmarks})
+        SQL
+
+        #...associations.rb
+      module Associations
+
+        def belongs_to(name, options = {})
+          self.assoc_options[name] = BelongsToOptions.new(name,options)
+          define_method(name) do
+            options = self.class.assoc_options[name]
+            foreign_key = self.send(options.foreign_key)
+            options.model_class.where(options.primary_key => 
+            foreign_key).first
+          end
+        end
+
+      end
+      </code>
+      #...Todo.rb
+
+      <code class='language-ruby'>
+      class Todo < RecordKeeper
+        belongs_to(:user,{
+          primary_key: :id,
+          foreign_key: :user_id,
+          class_name: "User"
+        })
+        has_many(:subtasks,{
+          primary_key: :id,
+          foreign_key: :todo_id,
+          class_name: "Subtask"
+        })
+      end
+      </code>
+    </pre>
+    <p>You can add and remove TODOs in the demo below</p>
+    <% @todos.each do |todo,subtasks| %>
+      <li><h4><%= todo.title %></h4>
+        <h5><%= todo.body %></h5>
+        <ul>
+          <% subtasks.each do |subtask| %>
+            <li>
+              <%= subtask.content %>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+  <div>
+  <p>Thanks to RecordKeeper, the data above was generated simply by the following code</p>
+    <pre style="width: 50%;">
+      <code class="language-ruby">
+        @todos = {}
+        Todo.all.each do |todo|
+          @todos[todo] = todo.subtasks
+        end
+      </code>
+    </pre>
+    <p>
+      Here, Similiar to Flash, a new instance of Session class is created with every request. With each request, the previous cookie is pulled from the request and set as the new cookie data. This cookie data persists as the <code style='font-size: 12px' class="language-ruby"> ControllerBase</code> calls <code style='font-size: 12px' class="language-ruby">Session#store_session</code> before each render
+    </p>
+  </div>
+</body>
+</html>

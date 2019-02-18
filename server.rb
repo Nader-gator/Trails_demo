@@ -10,6 +10,7 @@ require_relative 'app/models/subtask'
 require_relative 'app/controllers/main_page_controller'
 require_relative 'app/controllers/flash_controller'
 require_relative 'app/controllers/cookies_controller'
+require_relative 'app/controllers/recordkeeper_controller'
 
 
 User.finalize!
@@ -25,6 +26,7 @@ router.draw do
   post Regexp.new("^/flash$"), FlashController, :create
   get Regexp.new("^/cookies$"), CookiesController, :index
   post Regexp.new("^/cookies$"), CookiesController, :create
+  get Regexp.new("^/recordkeeper$"), RecordkeeperController, :index
   # get Regexp.new("^/PATH-HERE/(?<id>\\d+)$"), ControllerClass,:method
 end
 
