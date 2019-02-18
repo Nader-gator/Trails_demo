@@ -1,4 +1,3 @@
-require 'byebug'
 class FlashController < ControllerBase
   def index
     @now = self.flash.now['message-now']

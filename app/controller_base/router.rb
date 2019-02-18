@@ -49,6 +49,7 @@ class Router
     route = match(req)
     if route.nil?
       res.status = 404
+      res.write("404 NOT FOUND")
     else
       route.run(req,res)
     end
