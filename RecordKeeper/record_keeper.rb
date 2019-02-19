@@ -1,13 +1,14 @@
 require 'active_support/inflector'
 require_relative 'db_connection'
 require_relative 'associations'
+require 'byebug'
 
 class RecordKeeper
   extend Associations
 
   def self.columns
     return @columns if @columns
-    columns = DBConnection.execute2(<<-SQL).first
+    columns = DBConnection.execute2(<<-SQL)
     SELECT
       *
     FROM
@@ -50,19 +51,21 @@ class RecordKeeper
   end
 
   def self.parse_all(results)
-    results.map do |result_hash|
-      self.new(result_hash)
+    arr = []
+    results.each do |result_hash|
+      arr << self.new(result_hash)
     end
+    arr
   end
 
   def self.find(id)
-    hash = DBConnection.execute(<<-SQL,id).first
+    hash = DBConnection.execute(<<-SQL,[id])[0]
     SELECT
       *
     From
       #{self.table_name}
     WHERE
-      id = ?
+      id = $1
     SQL
     return nil unless hash
     self.new(hash)
@@ -79,39 +82,57 @@ class RecordKeeper
     @attributes ||= {}
   end
 
-  def attribute_values
-    self.class.columns.map do |attribute|
+  def attribute_values(columns)
+    columns.map do |attribute|
       self.send(attribute)
     end
   end
 
   def insert
-    cols = self.class.columns[1..-1]
-    qmarks= (["?"]* cols.count).join(", ")
+    cols = self.class.columns.dup
+    cols.delete(:id)
+    attributes = self.attribute_values(cols)
+    # qmarks= (["?"]* cols.count).join(", ")
+    qmarks = []
+    cols.count.times do |i|
+      qmarks << "$#{i+1}"
+    end
+    qmarks = qmarks.join(", ")
     cols = cols.map(&:to_s).join(", ")
-    attributes = self.attribute_values[1..-1]
 
-    insert = DBConnection.execute(<<-SQL,*attributes)
+    insert = DBConnection.execute(<<-SQL,attributes)
       INSERT INTO
         #{self.class.table_name} (#{cols})
       values
         (#{qmarks})
+      RETURNING
+        id
     SQL
-    self.id = DBConnection.last_insert_row_id
+
+    self.id = insert[0]['id']
+    self
   end
 
   def update
-    cols = self.class.columns
-    cols = cols.map{|col| "#{col.to_s}= ?"}.join(", ")
-    vals = self.attribute_values
-    DBConnection.execute(<<-SQL,*vals,self.id)
+    cols = self.class.columns.dup
+    vals = self.attribute_values(cols)
+    j = 1
+    # cols = cols.map.with_index {|col,i| "#{col.to_s}= $#{i+1}"}.join(", ")
+    cols.each_with_index do |col,i|
+      cols[i] = "#{col.to_s}= $#{i+1}"
+      j = i+1
+    end
+    
+    cols = cols.join(", ")
+    DBConnection.execute(<<-SQL,[*vals, self.id])
       UPDATE
         #{self.class.table_name}
       SET
         #{cols}
       WHERE
-        id = ?
+        id = $#{j+1}
     SQL
+    
   end
 
   def save
@@ -119,9 +140,8 @@ class RecordKeeper
   end
 
   def self.where(params)
-    insert_line = params.keys.map{|param| "#{param}= ?"}.join("AND ")
-
-    result = DBConnection.execute(<<-SQL,*params.values)
+    insert_line = params.keys.map.with_index {|param,i| "#{param}= $#{i+1}"}.join("AND ")
+    result = DBConnection.execute(<<-SQL,params.values)
       SELECT
         *
       FROM
@@ -134,3 +154,8 @@ class RecordKeeper
   end
 
 end
+
+class Test < RecordKeeper
+end
+Test.table_name = 'test'
+Test.finalize!

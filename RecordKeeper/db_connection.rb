@@ -1,43 +1,31 @@
-require 'sqlite3'
-
+require 'pg'
 PRINT_QUERIES = ENV['PRINT_QUERIES'] == 'true'
-ROOT_FOLDER = File.join(File.dirname(__FILE__), '..')
-SQL_FILE = File.join(ROOT_FOLDER, 'database.sql')
-DB_FILE = File.join(ROOT_FOLDER, 'database.db')
 
 class DBConnection
-  def self.open(db_file_name)
-    @db = SQLite3::Database.new(db_file_name)
-    @db.results_as_hash = true
-    @db.type_translation = true
+  def self.open(dbname)
+    @db = PG.connect(dbname: dbname)
 
     @db
   end
 
-  def self.reset
-    commands = [
-      "rm '#{DB_FILE}'",
-      "cat '#{SQL_FILE}' | sqlite3 '#{DB_FILE}'"
-    ]
-
-    commands.each { |command| `#{command}` }
-    DBConnection.open(DB_FILE)
-  end
-
   def self.instance
-    reset if @db.nil?
-
     @db
   end
 
   def self.execute(*args)
-    print_query(*args)
-    instance.execute(*args)
+    # print_query(*args)
+    instance.exec(*args)
   end
 
   def self.execute2(*args)
-    print_query(*args)
-    instance.execute2(*args)
+    # print_query(*args)
+    instance.exec(*args).fields
+    
+  end
+
+  def self.execute3(*args)
+    # print_query(*args)
+    instance.exec_params(*args)
   end
 
   def self.last_insert_row_id
@@ -46,16 +34,15 @@ class DBConnection
 
   private
 
-  def self.print_query(query, *interpolation_args)
-    return unless PRINT_QUERIES
+  # def self.print_query(query, *interpolation_args)
+  #   return unless PRINT_QUERIES
 
-    puts '--------------------'
-    puts query
-    unless interpolation_args.empty?
-      puts "interpolate: #{interpolation_args.inspect}"
-    end
-    puts '--------------------'
-  end
+  #   puts '--------------------'
+  #   puts query
+  #   unless interpolation_args.empty?
+  #     puts "interpolate: #{interpolation_args.inspect}"
+  #   end
+  #   puts '--------------------'
+  # end
 end
-DBConnection.reset
-DBConnection.open(DB_FILE)
+DBConnection.open("trails_demo")

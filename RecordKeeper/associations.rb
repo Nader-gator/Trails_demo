@@ -81,7 +81,7 @@ module Associations
 
       key = self.send(through_foreign_key)
 
-      results = DBConnection.execute(<<-SQL,key)
+      results = DBConnection.execute(<<-SQL,[key])
         SELECT
           #{source_table}.*
         FROM
@@ -91,7 +91,7 @@ module Associations
         ON
           #{through_table}.#{source_foreign_key} = #{source_table}.#{source_primary_key}
         WHERE 
-          #{through_table}.#{through_primary_key} = ?
+          #{through_table}.#{through_primary_key} = $1
       SQL
 
       source_options.model_class.parse_all(results).first
@@ -111,7 +111,7 @@ module Associations
       source_foreign_key = source_options.foreign_key
 
       key = self.send(through_primary_key)
-      results = DBConnection.execute(<<-SQL,key)
+      results = DBConnection.execute(<<-SQL,[key])
         SELECT
           #{source_table}.*
         FROM
@@ -121,7 +121,7 @@ module Associations
         ON
           #{through_table}.#{through_primary_key} = #{source_table}.#{source_foreign_key}
         WHERE
-          #{through_table}.#{through_foreign_key} = ?
+          #{through_table}.#{through_foreign_key} = $1
       SQL
 
       source_options.model_class.parse_all(results)
