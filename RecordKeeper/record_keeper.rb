@@ -157,5 +157,3 @@ end
 
 class Test < RecordKeeper
 end
-Test.table_name = 'test'
-Test.finalize!

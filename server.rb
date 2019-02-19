@@ -18,9 +18,9 @@ require_relative 'app/controllers/static_server_controller'
 require_relative 'app/controllers/controller_base_controller'
 
 
-User.finalize!
-Todo.finalize!
-Subtask.finalize!
+# User.finalize!
+# Todo.finalize!
+# Subtask.finalize!
 
 
 router = Router.new
