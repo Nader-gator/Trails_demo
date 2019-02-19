@@ -25,9 +25,7 @@ end
 
 class FileServer
   MIME_TYPES = {
-    '.txt' => 'text/plain',
     '.jpg' => 'image/jpeg',
-    '.zip' => 'application/zip',
     '.css' => 'text/css'
   }
 
