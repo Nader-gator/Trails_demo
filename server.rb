@@ -27,16 +27,16 @@ router = Router.new
 
 router.draw do
   get Regexp.new("^/$"), MainPageController, :index
-  get Regexp.new("^/flash$"), FlashController, :index
-  post Regexp.new("^/flash$"), FlashController, :create
-  get Regexp.new("^/cookies$"), CookiesController, :index
-  post Regexp.new("^/cookies$"), CookiesController, :create
-  get Regexp.new("^/recordkeeper$"), RecordkeeperController, :index
-  post Regexp.new("^/todos$"), TodosController, :create
-  post Regexp.new("^/subtasks$"), SubtasksController, :create
-  get Regexp.new("^/router$"), RouterController, :index
-  get Regexp.new("^/static$"), StaticServerController, :index
-  get Regexp.new("^/controllerbase$"), ControllerBaseController, :index
+  # get Regexp.new("^/flash$"), FlashController, :index
+  # post Regexp.new("^/flash$"), FlashController, :create
+  # get Regexp.new("^/cookies$"), CookiesController, :index
+  # post Regexp.new("^/cookies$"), CookiesController, :create
+  # get Regexp.new("^/recordkeeper$"), RecordkeeperController, :index
+  # post Regexp.new("^/todos$"), TodosController, :create
+  # post Regexp.new("^/subtasks$"), SubtasksController, :create
+  # get Regexp.new("^/router$"), RouterController, :index
+  # get Regexp.new("^/static$"), StaticServerController, :index
+  # get Regexp.new("^/controllerbase$"), ControllerBaseController, :index
   # get Regexp.new("^/PATH-HERE/(?<id>\\d+)$"), ControllerClass,:method
 end
 
