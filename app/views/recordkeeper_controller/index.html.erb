@@ -13,27 +13,27 @@
   <h3>Here is the database schema for this demo</h3>
   <pre style="width: 50%;">
       <code class="language-sql">
-      CREATE TABLE users (
-        id INTEGER PRIMARY KEY,
-        name VARCHAR(255) NOT NULL
-      );
+  CREATE TABLE users (
+    id INTEGER PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+  );
 
-      CREATE TABLE todos (
-        id INTEGER PRIMARY KEY,
-        title VARCHAR(255) NOT NULL,
-        body VARCHAR(255),
-        user_id INTEGER,
+  CREATE TABLE todos (
+    id INTEGER PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    body VARCHAR(255),
+    user_id INTEGER,
 
-        FOREIGN KEY(user_id) REFERENCES user(id)
-      );
+    FOREIGN KEY(user_id) REFERENCES user(id)
+  );
 
-      CREATE TABLE subtasks (
-        id INTEGER PRIMARY KEY,
-        content VARCHAR(255) NOT NULL,
-        todo_id INTEGER,
+  CREATE TABLE subtasks (
+    id INTEGER PRIMARY KEY,
+    content VARCHAR(255) NOT NULL,
+    todo_id INTEGER,
 
-        FOREIGN KEY(todo_id) REFERENCES todos(id)
-      );
+    FOREIGN KEY(todo_id) REFERENCES todos(id)
+  );
       </code>
     </pre>
 
@@ -42,34 +42,34 @@
 
   <pre style="width: 50%;">
       <code class="language-ruby">
-        #...record_keeper.rb
-      def insert
-        cols = self.class.columns[1..-1]
-        qmarks= (["?"]* cols.count).join(", ")
-        cols = cols.map(&:to_s).join(", ")
-        attributes = self.attribute_values[1..-1]
+  #...record_keeper.rb
+def insert
+  cols = self.class.columns[1..-1]
+  qmarks= (["?"]* cols.count).join(", ")
+  cols = cols.map(&:to_s).join(", ")
+  attributes = self.attribute_values[1..-1]
 
-        insert = DBConnection.execute(<<-SQL,*attributes)
-          INSERT INTO
-            #{self.class.table_name} (#{cols})
-          VALUES
-            (#{qmarks})
-        SQL
+  insert = DBConnection.execute(<<-SQL,*attributes)
+    INSERT INTO
+      #{self.class.table_name} (#{cols})
+    VALUES
+      (#{qmarks})
+  SQL
 
-        #...associations.rb
-      module Associations
+  #...associations.rb
+module Associations
 
-        def belongs_to(name, options = {})
-          self.assoc_options[name] = BelongsToOptions.new(name,options)
-          define_method(name) do
-            options = self.class.assoc_options[name]
-            foreign_key = self.send(options.foreign_key)
-            options.model_class.where(options.primary_key => 
-            foreign_key).first
-          end
-        end
+  def belongs_to(name, options = {})
+    self.assoc_options[name] = BelongsToOptions.new(name,options)
+    define_method(name) do
+      options = self.class.assoc_options[name]
+      foreign_key = self.send(options.foreign_key)
+      options.model_class.where(options.primary_key => 
+      foreign_key).first
+    end
+  end
 
-      end
+end
       </code>
       #...Todo.rb
 
@@ -89,8 +89,18 @@
       </code>
     </pre>
     <p>You can add and remove TODOs in the demo below</p>
+        <form action="/todos" method='post'>
+          <label>Title
+            <input type="text" name='title'>
+          </label>
+          <label>Body
+            <input type="text" name='body'>
+          </label>
+          <input type="submit" value='Add New Task'>
+        </form>
     <% @todos.each do |todo,subtasks| %>
-      <li><h4><%= todo.title %></h4>
+    <ul>
+      <li><h3><%= todo.title %></h4>
         <h5><%= todo.body %></h5>
         <ul>
           <% subtasks.each do |subtask| %>
@@ -98,8 +108,14 @@
               <%= subtask.content %>
             </li>
           <% end %>
+          <form action="subtasks" method='post'>
+          <input type="text" name='content'>
+          <input type="hidden" name='id' value=<%= todo.id %> >
+          <input type="submit" value='Add New Subtask'>
+          </form>
         </ul>
       </li>
+    </ul>
     <% end %>
   <div>
   <p>Thanks to RecordKeeper, the data above was generated simply by the following code</p>
@@ -109,6 +125,31 @@
         Todo.all.each do |todo|
           @todos[todo] = todo.subtasks
         end
+      </code>
+    </pre>
+
+    <p>And creating New Todos and subtasks are as simple as creating a new instance of the model class and saving it </p>
+    <pre style="width: 55%;">
+      <code class="language-ruby">
+#...TODO:
+class TodosController < ControllerBase
+  def create
+    todo = Todo.new(body: params["body"], title: params["title"])
+
+    todo.save
+    self.redirect_to('recordkeeper')
+  end
+end
+
+#...Subtask
+
+class SubtasksController < ControllerBase
+  def create
+    subtask = Subtask.new(content: params["content"], todo_id: params['id'])
+    subtask.save
+    redirect_to('recordkeeper')
+  end
+end
       </code>
     </pre>
     <p>

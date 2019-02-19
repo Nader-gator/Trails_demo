@@ -57,3 +57,5 @@ class DBConnection
     puts '--------------------'
   end
 end
+DBConnection.reset
+DBConnection.open(DB_FILE)
