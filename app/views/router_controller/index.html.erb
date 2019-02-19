@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RecordKeeper Demo</title>
+  <link rel="stylesheet" href="assets/prism.css">
+  <script src='assets/prism.js'></script>
+</head>
+<body>
+
+<h1>Router Demo</h1>
+<h2>This is a simple code demo for the Router</h2>
+
+<p>Trails handles routing similiar to Rails. for each route, there is a http method, a pattern or url, controller and action for the controller here is a snippet of Flash Controller from the Flash Demo</p>
+  <pre style="width: 50%;">
+    <code class="language-ruby">
+router.draw do
+  get Regexp.new("^/$"), MainPageController, :index
+  get Regexp.new("^/flash$"), FlashController, :index
+  post Regexp.new("^/flash$"), FlashController, :create
+end
+    </code>
+  </pre>
+  <p>
+    Routing is done by two classes. A single <code>Route</code> class and a <code>Router</code> Class. Router class holds an array of all the created Routes and also handles creating them. here is a snippet of how each route is created.
+  </p>
+
+    <pre style="width: 50%;">
+      <code class="language-ruby">
+def draw(&proc)
+  instance_eval(&proc)
+end
+
+[:get, :post, :put, :delete].each do |http_method|
+  define_method(http_method) do |pattern,controller_class,action_name|
+    add_route(pattern,http_method,controller_class,action_name)
+  end
+end
+      </code>
+    </pre>
+  <p>Every Route called in the <code>#draw</code> function is called with one of the corresponding http methods, which trigger #add_route, which creates and store a Route Object</p>
+
+  <p>Finally, when the Rack server runs, it will run every single request-response cycle through the router, which in turn matches a route to the url</p>
+
+    <pre style="width: 50%;">
+      <code class="language-ruby">
+#...Rack server:
+  app = Rack::Builder.new do
+    use Static
+    run app
+  end.to_app
+
+  Rack::Server.start(
+  app: app,
+  Port: 3000
+  )
+
+#...Router#run:
+
+def run(req, res)
+  route = match(req)
+  if route.nil?
+    res.status = 404
+    res.write("404 NOT FOUND")
+  else
+    route.run(req,res)
+  end
+
+end
+
+#...Route#run: 
+def run(req, res)
+  data = @pattern.match(req.path)
+
+  params = Hash[data.names.zip(data.captures)]
+  controller = controller_class.new(req,res,params)
+  controller.invoke_action(self.action_name)
+end
+      </code>
+    </pre>
+</body>
+</html>
