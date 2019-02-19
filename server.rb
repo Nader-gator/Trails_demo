@@ -15,6 +15,7 @@ require_relative 'app/controllers/todos_controller'
 require_relative 'app/controllers/subtasks_controller'
 require_relative 'app/controllers/router_controller'
 require_relative 'app/controllers/static_server_controller'
+require_relative 'app/controllers/controller_base_controller'
 
 
 User.finalize!
@@ -35,6 +36,7 @@ router.draw do
   post Regexp.new("^/subtasks$"), SubtasksController, :create
   get Regexp.new("^/router$"), RouterController, :index
   get Regexp.new("^/static$"), StaticServerController, :index
+  get Regexp.new("^/controllerbase$"), ControllerBaseController, :index
   # get Regexp.new("^/PATH-HERE/(?<id>\\d+)$"), ControllerClass,:method
 end
 

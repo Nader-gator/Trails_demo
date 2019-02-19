@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RecordKeeper Demo</title>
+  <link rel="stylesheet" href="assets/prism.css">
+  <script src='assets/prism.js'></script>
+</head>
+<body>
+
+<h1>ControllerBase code Demo</h1>
+
+<h2>This is a code demo for the heart of what makes Trails run, the <code>ControllerBase</code> class</h2>
+
+<p>ControllerBase class serves a simple function, make available methods to properly pass an html file to the Rack server to be rendered. It also keeps instances of <code>Session</code> and <code>Flash</code> classes. Another important function of this class is passing on the instance variable to <code>ERB</code> files to be rendered</p>
+
+<p>ControllerBase is initialized taking in the request and response from Rack, and any params passed on by the router(such as wild card params in the url)</p>
+<pre style="width: 50%;">
+<code class="language-ruby;">
+class ControllerBase
+  attr_reader :req, :res, :params,:session
+  attr_accessor :response_built
+
+  def initialize(req, res,params = {})
+    @req, @res = req, res
+    @response_built = false
+    @params = params.merge(req.params)
+  end
+
+  def already_built_response?
+    @response_built
+  end
+
+  def session
+    @session ||= Session.new(@req)
+  end
+
+  def invoke_action(name)
+    self.send(name)
+    render(name) unless already_built_response?
+  end
+
+  def flash
+    @flash ||= Flash.new(@req)
+    @flash
+  end
+</code>
+</pre>
+
+<p>When <code>#render</code> is called on the controller, the controller finds the html view corresponding to the controller name, and then generates an ERB file, and finally binds it to the local variables so that instance varibles can be used to render content passed on in the controllers</p>
+<pre style="width: 50%;">
+<code class="language-ruby;">
+  def render_content(content, content_type)
+      self.redirect_response_prep
+      @res.write(content)
+      @res['Content-Type'] = content_type
+    nil
+  end
+
+  def render(template_name)
+    path = File.dirname(__FILE__)
+    template_path = File.join(path,"..",'views',self.class.name.underscore,
+    "#{template_name}.html.erb")
+    template = File.read(template_path)
+    render_content(ERB.new(template).result(binding),"text/html")
+  end
+</code>
+</pre>
+
+<p>finally, as it was indicated in the Flash and Session demos, before each render happens, <code>#redirect_response_prep</code> is called to store both Session cookies and Flash, and also raise errors for double renders</p>
+
+<pre style="width: 50%;">
+<code class="language-ruby;">
+def redirect_response_prep
+  raise "Double render error" if self.already_built_response?
+  self.response_built = true
+  self.session.store_session(@res)
+  self.flash.store_flash(@res)
+end
+</code>
+</pre>
+</body>
+</html>
