@@ -14,40 +14,18 @@
   <div class='title'>
   </div>
     <h1>RecordKeeper Demo</h1>
+    <a href="/">Go Back home</a>
     <h2>This Demo showcases RecordKeepr, an independant project from Trails, RecordKeeper is a Ruby ORM for PostgreSQL</h2>
 
   <h3>Here is the database schema for this demo</h3>
   <div class='fdemos'>
 
   <h3 style='font-size: 20px;line-height:1.5em;margin-right: 10%;'>This demo is a simple TODOs App, each TODO has a title and a body, and may have many subtasks. These subtasks have associations to User and TODOs.below is a snippet of code on how a new row is inserted and how belongs_to associations are made</h4>
-</div>
-<div class='fcode'>
-
-  <pre >
-      <code class="language-sql">
-todos (
-  id INTEGER PRIMARY KEY,
-  title VARCHAR(50) NOT NULL,
-  body VARCHAR(50),
-  user_id INTEGER,
-
-  FOREIGN KEY(user_id) REFERENCES user(id)
-);
-
-subtasks (
-  id INTEGER PRIMARY KEY,
-  content VARCHAR(50) NOT NULL,
-  todo_id INTEGER,
-
-  FOREIGN KEY(todo_id) REFERENCES todos(id)
-);
-      </code>
-    </pre>
-</div>
-<div class='fdemos'>
+  <br><br><br>
+  <div class='fdemos'>
     <div class='flash'>
     
-    <p>You can add and remove TODOs in the demo below</p>
+    <p style="color:white; font-size: 20px;">You can add and remove TODOs in the demo below</p>
         <form action="/todos" method='post'>
           <label>Title
             <input type="text" name='title'>
@@ -78,6 +56,32 @@ subtasks (
     <% end %>
     </div>
     </div>
+</div>
+
+<div class='fcode'>
+
+  <pre >
+      <code class="language-sql">
+todos (
+  id INTEGER PRIMARY KEY,
+  title VARCHAR(50) NOT NULL,
+  body VARCHAR(50),
+  user_id INTEGER,
+
+  FOREIGN KEY(user_id) REFERENCES user(id)
+);
+
+subtasks (
+  id INTEGER PRIMARY KEY,
+  content VARCHAR(50) NOT NULL,
+  todo_id INTEGER,
+
+  FOREIGN KEY(todo_id) REFERENCES todos(id)
+);
+      </code>
+    </pre>
+</div>
+
     <div class='fcode'>
 
 
