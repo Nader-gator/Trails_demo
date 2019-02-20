@@ -11,14 +11,26 @@
 </head>
 <body>
 
+<div class="main-head">
+  <div class='title'>
 <h1>ControllerBase code Demo</h1>
-
+  
 <h2>This is a code demo for the heart of what makes Trails run, the <code>ControllerBase</code> class</h2>
+</div>
+  <br><br>
 
-<p>ControllerBase class serves a simple function, make available methods to properly pass an html file to the Rack server to be rendered. It also keeps instances of <code>Session</code> and <code>Flash</code> classes. Another important function of this class is passing on the instance variable to <code>ERB</code> files to be rendered</p>
+<div class='fdemos'>
+<div class='flash' style="margin-left:2vw">
+<br>
+<p style='font-size: 20px;line-height:1.5em;'>ControllerBase class serves a simple function, make available methods to properly pass an html file to the Rack server to be rendered. It also keeps instances of <code>Session</code> and <code>Flash</code> classes. Another important function of this class is passing on the instance variable to <code>ERB</code> files to be rendered</p>
 
-<p>ControllerBase is initialized taking in the request and response from Rack, and any params passed on by the router(such as wild card params in the url)</p>
-<pre style="width: 50%;">
+<p style='font-size: 20px;line-height:1.5em;'>ControllerBase is initialized taking in the request and response from Rack, and any params passed on by the router(such as wild card params in the url)</p>
+</div>
+</div>
+
+<div class='fcode'>
+
+<pre style= 'width: 40vw'>
 <code class="language-ruby;">
 class ControllerBase
   attr_reader :req, :res, :params,:session
@@ -49,9 +61,11 @@ class ControllerBase
   end
 </code>
 </pre>
+</div>
+<p style='font-size: 20px;line-height:1.5em; border-top: 1px solid black;padding-top:15px'>When <code>#render</code> is called on the controller, the controller finds the html view corresponding to the controller name, and then generates an ERB file, and finally binds it to the local variables so that instance varibles can be used to render content passed on in the controllers</p>
 
-<p>When <code>#render</code> is called on the controller, the controller finds the html view corresponding to the controller name, and then generates an ERB file, and finally binds it to the local variables so that instance varibles can be used to render content passed on in the controllers</p>
-<pre style="width: 50%;">
+<div class='fcode'>
+<pre style= 'width: 60vw'>
 <code class="language-ruby;">
   def render_content(content, content_type)
       self.redirect_response_prep
@@ -69,10 +83,11 @@ class ControllerBase
   end
 </code>
 </pre>
+</div>
+<p style='font-size: 20px;line-height:1.5em; border-top: 1px solid black;padding-top:15px' >finally, as it was indicated in the Flash and Session demos, before each render happens, <code>#redirect_response_prep</code> is called to store both Session cookies and Flash, and also raise errors for double renders</p>
+<div class='fcode'>
 
-<p>finally, as it was indicated in the Flash and Session demos, before each render happens, <code>#redirect_response_prep</code> is called to store both Session cookies and Flash, and also raise errors for double renders</p>
-
-<pre style="width: 50%;">
+<pre style= 'width: 50vw'>
 <code class="language-ruby;">
 def redirect_response_prep
   raise "Double render error" if self.already_built_response?
@@ -82,5 +97,7 @@ def redirect_response_prep
 end
 </code>
 </pre>
+</div>
 </body>
+</div>
 </html>
