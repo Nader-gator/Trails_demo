@@ -10,12 +10,18 @@
   <script src='assets/script.js'></script>
 </head>
 <body>
+<div class='wrapper'>
+  <div class='main-head'>
+  <div class='title'>
   <h1>Cookies Demo</h1>
   <h2>This demo showcases session cookies. This is somewhat similiar to Flash, with the only difference being information in cookies persist for a long time. This is most often used for authentication purposes so users don't have to log in every time.</h2>
 
-  <h3>You can try it here. Enter any message and hit submit. It will be stored in your cookies and displayed to you whenever you come back to this page, as long as you don't clear your cookies and use the same browser/machine as you did when you submitted this message</h3>
+  </div>
+  <div class='fdemos'>
+  <h1 style='color: white'>Demo</h1>
+  <h3>Enter any message and hit submit. It will be stored in your cookies and displayed to you whenever you come back to this page, as long as you don't clear your cookies and use the same browser/machine as you did when you submitted this message</h3>
+  <div class='flash'>
   <h4>Note Cookies here are set to reset every two weeks</h4>
-
   <form action="/cookies" method='post'>
     <label> Message to be stored in cookies
       <input type="text" name='cookie-msg'>
@@ -24,58 +30,59 @@
   </form>
 
   <% if @msg.count > 0 %>
-    <h4>Here are your cookie messages</h4>
+    <h4 style="color: white;">Here are your cookie messages</h4>
     <ul>
     <% @msg.each do |text| %>
       <li><%= text %></li>
     <% end %>
     </ul>
   <% end %>
-
-  <div>
-    <pre style="width: 50%;">
+  </div>
+  </div>
+  <div class='fcode'>
+    <pre >
       <code class="language-ruby">
-    class Session
+class Session
 
-      def initialize(req)
-        cookie = req.cookies['_Trails_app']
+  def initialize(req)
+    cookie = req.cookies['_Trails_app']
 
-        if cookie
-          @cookie_data = JSON.parse(cookie)
-        else
-          @cookie_data = {}
-        end
-      end
-
-      def [](key)
-        @cookie_data[key]
-      end
-
-      def []=(key, val)
-        @cookie_data[key]=val
-      end
-
-      def store_session(res)
-        cookie = {path: '/cookies', value: @cookie_data.to_json,
-        expires: Time.now+24*60*60*14}
-        res.set_cookie("_Trails_app",cookie)
-      end
+    if cookie
+      @cookie_data = JSON.parse(cookie)
+    else
+      @cookie_data = {}
     end
+  end
+
+  def [](key)
+    @cookie_data[key]
+  end
+
+  def []=(key, val)
+    @cookie_data[key]=val
+  end
+
+  def store_session(res)
+    cookie = {path: '/cookies', 
+    value: @cookie_data.to_json,
+    expires: Time.now+24*60*60*14}
+    res.set_cookie("_Trails_app",cookie)
+  end
+end
       </code>
     </pre>
-    <p>
-      Here, Similiar to Flash, a new instance of Session class is created with every request. With each request, the previous cookie is pulled from the request and set as the new cookie data. This cookie data persists as the <code style='font-size: 12px' class="language-ruby"> ControllerBase</code> calls <code style='font-size: 12px' class="language-ruby">Session#store_session</code> before each render
-      <pre style="width: 50%">
-        <code class="language-ruby">
-    def redirect_response_prep
-      raise "Double render error" if self.already_built_response?
-      self.response_built = true
-      self.session.store_session(@res)
-      self.flash.store_flash(@res)
-    end
-        </code>
-      </pre>
+  </div>
+    <p style="font-size: 20px; color: white;">
+      Here, Similiar to Flash, a new instance of Session class is created with every request. With each request, the previous cookie is pulled from the request and set as the new cookie data. This cookie data persists as the <code style='font-size: 20px' class="language-ruby"> ControllerBase</code> calls <code style='font-size: 20px' class="language-ruby">Session#store_session</code> before each render
+      <pre style='width: 65%; height: 25vh;margin-left: 2em'><code class="language-ruby">
+def redirect_response_prep
+  raise "Double render error" if self.already_built_response?
+  self.response_built = true
+  self.session.store_session(@res)
+  self.flash.store_flash(@res)
+end</code></pre>
     </p>
   </div>
 </body>
+</div>
 </html>

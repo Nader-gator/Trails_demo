@@ -10,6 +10,8 @@
   <script src='assets/script.js'></script>
 </head>
 <body>
+<div class='wrapper'>
+
 <div class="main-head">
   <div class='title'>
     <h1>Flash Controller Demo</h1>
@@ -17,6 +19,7 @@
   </div>
 
 <div class='fdemos'>
+  <h1 style='color: white'>Demo</h1>
   <div class='flash'>
     <h3>This is the flash now Demo. Any message you type here will remain in the cookies for one request-response cycle</h3>
     <form action="/flash" method='post'>
@@ -49,42 +52,42 @@
 </div>
 
 <div class='fcode'>
-    <h1>Source Code</h1>
+    <h1 style='color: white'>Source Code</h1>
     <p>
       Trails was created following OOP pricnciples, and therefore different parts of the framework are split into different Objects. In this case, flashing is done using a Flash Object.
     </p>
-      <pre style="width: 50%;height: 400px;"><code class="language-ruby">
-    class Flash
-      attr_reader :now
-      def initialize(req)
-        cookie = req.cookies["_Trails_app"]
-        if cookie
-          @now = JSON.parse(cookie)
-        else
-          @now = {}
-        end
-        @flash = {}
-      end
-
-      def [](key)
-        @now[key.to_s] || @flash[key.to_s]
-      end
-
-      def []=(key,value)
-        @flash[key.to_s] = value
-      end
-
-      def store_flash(res)
-        res.set_cookie('_Trails_app',value: @flash.to_json,path: '/')
-      end
-
+      <pre ><code class="language-ruby">
+class Flash
+  attr_reader :now
+  def initialize(req)
+    cookie = req.cookies["_Trails_app"]
+    if cookie
+      @now = JSON.parse(cookie)
+    else
+      @now = {}
     end
+    @flash = {}
+  end
 
+  def [](key)
+    @now[key.to_s] || @flash[key.to_s]
+  end
+
+  def []=(key,value)
+    @flash[key.to_s] = value
+  end
+
+  def store_flash(res)
+    res.set_cookie('_Trails_app'
+    ,value: @flash.to_json,path: '/')
+  end
+end
       </code></pre>
-      <p>
-        There are two instance variables in the Flash class. One for Now, and one for Flash. A new instance of Flash every time the user calls the #flash on COntrollerBase, which is the base controller class for all controller. A ControllerBase is created and destroyed after every single request-response cycle. This means the Flash instance is too created and destroyed after every response request cycle. This makes Flash now be available and self destruct after every response request cycle, but This also means normal Flash must persist somehow. To accomplish that, after every cycle, flash is stored inside the response cookie, and in the subsequent request, the flash is extracted out of the cookie. Since the <code style='font-size: 12px' class="language-ruby">Flash#[](key) </code>function is agnostic to whether the flash content is store in <code style='font-size: 12px' style='size: 15px' class="language-ruby">@now</code> or <code style='font-size: 12px' class="language-ruby">@flash</code>, the message in flash can be excracted by simply calling the key.
+</div>
+      <p style="font-size: 20px; color: white;">
+        There are two instance variables in the Flash class. One for Now, and one for Flash. A new instance of Flash every time the user calls the #flash on COntrollerBase, which is the base controller class for all controller. A ControllerBase is created and destroyed after every single request-response cycle. This means the Flash instance is too created and destroyed after every response request cycle. This makes Flash now be available and self destruct after every response request cycle, but This also means normal Flash must persist somehow. To accomplish that, after every cycle, flash is stored inside the response cookie, and in the subsequent request, the flash is extracted out of the cookie. Since the <code style='font-size: 20px' class="language-ruby">Flash#[](key) </code>function is agnostic to whether the flash content is store in <code style='font-size: 20px' style='size: 15px' class="language-ruby">@now</code> or <code style='font-size: 20px' class="language-ruby">@flash</code>, the message in flash can be excracted by simply calling the key.
       </p>
   </div>
-</div>
 </body>
+</div>
 </html>
