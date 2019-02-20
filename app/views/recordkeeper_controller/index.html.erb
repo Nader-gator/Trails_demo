@@ -8,32 +8,27 @@
 </head>
 <body>
   <h1>RecordKeeper Demo</h1>
-  <h2>This Demo showcases RecordKeepr, an independant project from Trails, RecordKeeper is a Ruby ORM for SQLite3</h2>
+  <h2>This Demo showcases RecordKeepr, an independant project from Trails, RecordKeeper is a Ruby ORM for PostgreSQL</h2>
 
   <h3>Here is the database schema for this demo</h3>
   <pre style="width: 50%;">
       <code class="language-sql">
-  CREATE TABLE users (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
-  );
+todos (
+  id INTEGER PRIMARY KEY,
+  title VARCHAR(50) NOT NULL,
+  body VARCHAR(50),
+  user_id INTEGER,
 
-  CREATE TABLE todos (
-    id INTEGER PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    body VARCHAR(255),
-    user_id INTEGER,
+  FOREIGN KEY(user_id) REFERENCES user(id)
+);
 
-    FOREIGN KEY(user_id) REFERENCES user(id)
-  );
+subtasks (
+  id INTEGER PRIMARY KEY,
+  content VARCHAR(50) NOT NULL,
+  todo_id INTEGER,
 
-  CREATE TABLE subtasks (
-    id INTEGER PRIMARY KEY,
-    content VARCHAR(255) NOT NULL,
-    todo_id INTEGER,
-
-    FOREIGN KEY(todo_id) REFERENCES todos(id)
-  );
+  FOREIGN KEY(todo_id) REFERENCES todos(id)
+);
       </code>
     </pre>
 
@@ -44,50 +39,49 @@
       <code class="language-ruby">
   #...record_keeper.rb
 def insert
-  cols = self.class.columns[1..-1]
-  qmarks= (["?"]* cols.count).join(", ")
-  cols = cols.map(&:to_s).join(", ")
-  attributes = self.attribute_values[1..-1]
+    cols = self.class.columns.dup
+    cols.delete(:id)
+    attributes = self.attribute_values(cols)
+    # qmarks= (["?"]* cols.count).join(", ")
+    qmarks = []
+    cols.count.times do |i|
+      qmarks << "$#{i+1}"
+    end
+    qmarks = qmarks.join(", ")
+    cols = cols.map(&:to_s).join(", ")
 
-  insert = DBConnection.execute(<<-SQL,*attributes)
-    INSERT INTO
-      #{self.class.table_name} (#{cols})
-    VALUES
-      (#{qmarks})
-  SQL
+    insert = DBConnection.execute(<<-SQL,attributes)
+      INSERT INTO
+        #{self.class.table_name} (#{cols})
+      values
+        (#{qmarks})
+      RETURNING
+        id
+    SQL
+
+    self.id = insert[0]['id']
+    self
+  end
 
   #...associations.rb
 module Associations
 
-  def belongs_to(name, options = {})
-    self.assoc_options[name] = BelongsToOptions.new(name,options)
-    define_method(name) do
-      options = self.class.assoc_options[name]
-      foreign_key = self.send(options.foreign_key)
-      options.model_class.where(options.primary_key => 
-      foreign_key).first
-    end
+def belongs_to(name, options = {})
+  self.assoc_options[name] = BelongsToOptions.new(name,options)
+  define_method(name) do
+    options = self.class.assoc_options[name]
+    foreign_key = self.send(options.foreign_key)
+    options.model_class.where(options.primary_key => 
+    foreign_key).first
   end
-
-end
-      </code>
-      #...Todo.rb
-
-      <code class='language-ruby'>
-      class Todo < RecordKeeper
-        belongs_to(:user,{
-          primary_key: :id,
-          foreign_key: :user_id,
-          class_name: "User"
-        })
-        has_many(:subtasks,{
-          primary_key: :id,
-          foreign_key: :todo_id,
-          class_name: "Subtask"
-        })
-      end
-      </code>
-    </pre>
+end</code>
+<code class='language-ruby'>
+#...subtask.rb
+  belongs_to(:todo,{
+  primary_key: :id,
+  foreign_key: :todo_id,
+  class_name: "Todo"
+      })</code></pre>
     <p>You can add and remove TODOs in the demo below</p>
         <form action="/todos" method='post'>
           <label>Title

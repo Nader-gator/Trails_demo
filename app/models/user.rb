@@ -1,4 +1,3 @@
-require 'BCrypt'
 class User < RecordKeeper
   has_many(:todos,{
     primary_key: :id,

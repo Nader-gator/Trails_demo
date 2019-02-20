@@ -4,6 +4,4 @@ class Subtask < RecordKeeper
     foreign_key: :todo_id,
     class_name: "Todo"
   })
-
-  has_one_through(:user,:todo,:user)
 end

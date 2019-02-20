@@ -1,7 +1,6 @@
 require 'active_support/inflector'
 require_relative 'db_connection'
 require_relative 'associations'
-require 'byebug'
 
 class RecordKeeper
   extend Associations
@@ -153,7 +152,4 @@ class RecordKeeper
     self.parse_all(result)
   end
 
-end
-
-class Test < RecordKeeper
 end

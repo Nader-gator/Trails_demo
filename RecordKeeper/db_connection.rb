@@ -1,10 +1,18 @@
 require 'pg'
-PRINT_QUERIES = ENV['PRINT_QUERIES'] == 'true'
+require 'uri'
+# PRINT_QUERIES = ENV['PRINT_QUERIES'] == 'true'
 
 class DBConnection
+  ENV["RACK_ENV"] = ENV["RACK_ENV"] || 'test'
   def self.open(dbname)
-    @db = PG.connect(dbname: dbname)
 
+    if ENV["RACK_ENV"] == "production"
+      uri = URI.parse(ENV['DATABASE_URL'])
+      @db = PG.connect(uri.hostname, uri.port, nil, nil, uri.path[1..-1], uri.user, uri.password)
+    else
+      @db = PG.connect(dbname: dbname )
+    end
+    
     @db
   end
 
@@ -45,4 +53,3 @@ class DBConnection
   #   puts '--------------------'
   # end
 end
-DBConnection.open("trails_demo")
