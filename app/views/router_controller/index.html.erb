@@ -10,12 +10,26 @@
   <script src='assets/script.js'></script>
 </head>
 <body>
+<div class="main-head">
+  <div class='title'>
+  
 
 <h1>Router Demo</h1>
 <h2>This is a simple code demo for the Router</h2>
 <h1>TODO: nested route</h1>
 <p>Trails handles routing similiar to Rails. for each route, there is a http method, a pattern or url, controller and action for the controller here is a snippet of Flash Controller from the Flash Demo</p>
-  <pre style="width: 50%;">
+</div>
+<div class='fdemos'>
+  <div class='flash'>
+  
+    <p style='font-size: 20px;line-height:1.5em;margin-right: 5%;'>
+    Routing is done by two classes. A single <code>Route</code> class and a <code>Router</code> Class. Router class holds an array of all the created Routes and also handles creating them. here is a snippet of how each route is created.
+  </p>
+  </div>
+  </div>
+  <div class='fcode'>
+  
+  <pre >
     <code class="language-ruby">
 router.draw do
   get Regexp.new("^/$"), MainPageController, :index
@@ -24,12 +38,13 @@ router.draw do
 end
     </code>
   </pre>
-  <p>
-    Routing is done by two classes. A single <code>Route</code> class and a <code>Router</code> Class. Router class holds an array of all the created Routes and also handles creating them. here is a snippet of how each route is created.
-  </p>
+</div>
 
-    <pre style="width: 50%;">
-      <code class="language-ruby">
+    <p style='border-top: 1px solid black;padding-top:20px'>Every Route called in the <code>#draw</code> function is called with one of the corresponding http methods, which trigger #add_route, which creates and store a Route Object</p>
+
+
+  <div class='fcode'>
+    <pre style='width: 50vw;'><code class="language-ruby">
 def draw(&proc)
   instance_eval(&proc)
 end
@@ -39,14 +54,14 @@ end
     add_route(pattern,http_method,controller_class,action_name)
   end
 end
-      </code>
-    </pre>
-  <p>Every Route called in the <code>#draw</code> function is called with one of the corresponding http methods, which trigger #add_route, which creates and store a Route Object</p>
+      </code></pre>
+  </div>
 
   <p>Finally, when the Rack server runs, it will run every single request-response cycle through the router, which in turn matches a route to the url</p>
-
-    <pre style="width: 50%;">
-      <code class="language-ruby">
+  <div class='fcode'>
+  
+    <pre style='width: 40vw' >
+      <code  class="language-ruby">
 #...Rack server:
   app = Rack::Builder.new do
     use Static
@@ -55,7 +70,7 @@ end
 
   Rack::Server.start(
   app: app,
-  Port: 3000
+  Port: ENV['PORT']
   )
 
 #...Router#run:
@@ -79,7 +94,8 @@ def run(req, res)
   controller = controller_class.new(req,res,params)
   controller.invoke_action(self.action_name)
 end
-      </code>
-    </pre>
+</code></pre>
+    </div>
 </body>
+</div>
 </html>
