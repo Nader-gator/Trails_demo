@@ -10,14 +10,22 @@
   <script src='assets/script.js'></script>
 </head>
 <body>
-
+<div class="main-head">
+  <div class='title'>
+ 
 <h1>Static Content Server Demo</h1>
 <h2>This is a demo of static content server portion of Trails</h2>
 <p>The static content server allows the server to serve any file stored in the Assets directory of the server, allowing for css, images and other content to be used on the server</p>
-<a href="./assets/astro-sloth.jpg">Click on this link to open an image hosted on this server</a>
-
-<p>Static content in Trails is served using a middleware class called <code class='language-ruby'>Static</code> This class holds the folder name of the assets that will be served, and also check if a file requested exists. If the file exists, it calls on the <code class='language-ruby'>FileServer</code>class to create a new Rack response.</p>
-<pre style="width: 50%;">
+<a href="./assets/astro-sloth.jpg" style="color: white;">Click on this link to open an image hosted on this server</a>
+<br><br><br>
+ </div>
+ <div class='fdemos'>
+ <br><br>
+<p style='font-size: 20px;line-height:1.5em;'>Static content in Trails is served using a middleware class called <code style='font-size: 15px;' class='language-ruby'>Static</code> This class holds the folder name of the assets that will be served, and also check if a file requested exists. If the file exists, it calls on the <code style='font-size: 15px;' class='language-ruby'>FileServer</code>class to create a new Rack response.</p>
+ </div>
+ <div class='fcode'>
+ 
+<pre>
 <code class="language-ruby">
 class Static
   attr_reader :app, :root, :file_server
@@ -45,10 +53,17 @@ class Static
 end
 </code>
 </pre>
+</div>
+<h1 style='color: white;border-top: 1px solid black;padding-top: 20px;'>File Server</h1>
+<br>
+<div class='fdemos'>
+<br><br><br>
+  <p style='font-size: 20px;line-height:1.5em;'><code style='font-size: 15px;' class='language-ruby'>FileServer</code>class has one primary function, take in a path, such as <code style='font-size: 15px;' class='language-ruby'>Assets/image</code> create a file path relative to the source code of the middleware, and finally read and serve the file through a rack response. This means the Rack response must parse the MIME type from the files extension. This needs to be done manually for each new filetype that is to be served</p>
 
-<p><code class='language-ruby'>FileServer</code>class has one primary function, take in a path, such as <code>Assets/image</code> create a file path relative to the source code of the middleware, and finally read and serve the file through a rack response. This means the Rack response must parse the MIME type from the files extension. This needs to be done manually for each new filetype that is to be served</p>
+</div>
+<div class='fcode'>
 
-<pre style="width: 50%;">
+<pre>
 <code class="language-ruby">
 class FileServer
   MIME_TYPES = {
@@ -90,5 +105,8 @@ class FileServer
 end
 </code>
 </pre>
+</div>
+</div>
+
 </body>
 </html>
