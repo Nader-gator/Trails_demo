@@ -62,7 +62,15 @@ ul.icons li a {
    0%   {opacity: 0.1;}
   100% {opacity: 1;}
 }
-
+.author {
+  animation-name: author;
+  animation-duration: 3s;
+}
+@keyframes author{
+   0%   {opacity: 0;}
+   90%  {opacity: 0;}
+  100% {opacity: 1;}
+}
 .link-container{
   display: flex;
   justify-content: center;

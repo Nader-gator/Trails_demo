@@ -10,11 +10,20 @@
   <script src='assets/script.js'></script>
 </head>
 <body>
-  <h1>RecordKeeper Demo</h1>
-  <h2>This Demo showcases RecordKeepr, an independant project from Trails, RecordKeeper is a Ruby ORM for PostgreSQL</h2>
+<div class="main-head">
+  <div class='title'>
+  </div>
+    <h1>RecordKeeper Demo</h1>
+    <h2>This Demo showcases RecordKeepr, an independant project from Trails, RecordKeeper is a Ruby ORM for PostgreSQL</h2>
 
   <h3>Here is the database schema for this demo</h3>
-  <pre style="width: 50%;">
+  <div class='fdemos'>
+
+  <h3 style='font-size: 20px;line-height:1.5em;margin-right: 10%;'>This demo is a simple TODOs App, each TODO has a title and a body, and may have many subtasks. These subtasks have associations to User and TODOs.below is a snippet of code on how a new row is inserted and how belongs_to associations are made</h4>
+</div>
+<div class='fcode'>
+
+  <pre >
       <code class="language-sql">
 todos (
   id INTEGER PRIMARY KEY,
@@ -34,11 +43,96 @@ subtasks (
 );
       </code>
     </pre>
+</div>
+<div class='fdemos'>
+    <div class='flash'>
+    
+    <p>You can add and remove TODOs in the demo below</p>
+        <form action="/todos" method='post'>
+          <label>Title
+            <input type="text" name='title'>
+          </label>
+          <label>Body
+            <input type="text" name='body'>
+          </label>
+          <input type="submit" value='Add New Task'>
+        </form>
+    <% @todos.each do |todo,subtasks| %>
+    <ul style='list-style: none; text-align: left'>
+      <li><h3><%= todo.title %></h4>
+        <h5><%= todo.body %></h5>
+        <ul style='list-style: none;'>
+          <% subtasks.each do |subtask| %>
+            <li>
+              <%= subtask.content %>
+            </li>
+          <% end %>
+          <form action="subtasks" method='post'>
+          <input type="text" name='content'>
+          <input type="hidden" name='id' value=<%= todo.id %> >
+          <input type="submit" value='Add New Subtask'>
+          </form>
+        </ul>
+      </li>
+    </ul>
+    <% end %>
+    </div>
+    </div>
+    <div class='fcode'>
 
 
-  <h3>This demo is a simple TODOs App, each TODO has a title and a body, and may have many subtasks. These subtasks have associations to User and TODOs.below is a snippet of code on how a new row is inserted and how belongs_to associations are made</h4>
 
-  <pre style="width: 50%;">
+
+<p>Thanks to RecordKeeper, the data above was generated simply by the following code</p>
+    <pre style='min-height: 10vh'>
+      <code class="language-ruby">
+  @todos = {}
+  Todo.all.each do |todo|
+    @todos[todo] = todo.subtasks
+  end
+      </code>
+    </pre>
+  <p>The association for how a subtask belongs to a Todo is simply defined like this</p>
+
+    <pre style='min-height: 10vh'><code class='language-ruby'>
+  #...subtask.rb
+  belongs_to(:todo,{
+  primary_key: :id,
+  foreign_key: :todo_id,
+  class_name: "Todo"
+      })</code></pre>
+
+     <p>And creating New Todos and subtasks are as simple as creating a new instance of the model class and saving it </p>
+    <pre >
+      <code class="language-ruby">
+#...TODO:
+class TodosController < ControllerBase
+  def create
+    todo = Todo.new(body: params["body"],
+     title: params["title"])
+
+    todo.save
+    self.redirect_to('recordkeeper')
+  end
+end
+
+
+#...Subtasks:
+class SubtasksController < ControllerBase
+  def create
+    subtask = Subtask.new(content: params["content"], 
+    todo_id: params['id'])
+    subtask.save
+    redirect_to('recordkeeper')
+  end
+end
+      </code>
+    </pre>
+    </div>
+
+  <h1 style='color: white;border-top: 1px solid black;padding-top: 20px;'>Here is the source code for inserting new records and associations</h1>
+  <div class='fcode' style='width: 50vw'>
+  <pre >
       <code class="language-ruby">
   #...record_keeper.rb
 def insert
@@ -78,80 +172,9 @@ def belongs_to(name, options = {})
     foreign_key).first
   end
 end</code>
-<code class='language-ruby'>
-#...subtask.rb
-  belongs_to(:todo,{
-  primary_key: :id,
-  foreign_key: :todo_id,
-  class_name: "Todo"
-      })</code></pre>
-    <p>You can add and remove TODOs in the demo below</p>
-        <form action="/todos" method='post'>
-          <label>Title
-            <input type="text" name='title'>
-          </label>
-          <label>Body
-            <input type="text" name='body'>
-          </label>
-          <input type="submit" value='Add New Task'>
-        </form>
-    <% @todos.each do |todo,subtasks| %>
-    <ul>
-      <li><h3><%= todo.title %></h4>
-        <h5><%= todo.body %></h5>
-        <ul>
-          <% subtasks.each do |subtask| %>
-            <li>
-              <%= subtask.content %>
-            </li>
-          <% end %>
-          <form action="subtasks" method='post'>
-          <input type="text" name='content'>
-          <input type="hidden" name='id' value=<%= todo.id %> >
-          <input type="submit" value='Add New Subtask'>
-          </form>
-        </ul>
-      </li>
-    </ul>
-    <% end %>
-  <div>
-  <p>Thanks to RecordKeeper, the data above was generated simply by the following code</p>
-    <pre style="width: 50%;">
-      <code class="language-ruby">
-        @todos = {}
-        Todo.all.each do |todo|
-          @todos[todo] = todo.subtasks
-        end
-      </code>
-    </pre>
+</pre>
+      </div>
 
-    <p>And creating New Todos and subtasks are as simple as creating a new instance of the model class and saving it </p>
-    <pre style="width: 55%;">
-      <code class="language-ruby">
-#...TODO:
-class TodosController < ControllerBase
-  def create
-    todo = Todo.new(body: params["body"], title: params["title"])
-
-    todo.save
-    self.redirect_to('recordkeeper')
-  end
-end
-
-
-#...Subtasks:
-class SubtasksController < ControllerBase
-  def create
-    subtask = Subtask.new(content: params["content"], todo_id: params['id'])
-    subtask.save
-    redirect_to('recordkeeper')
-  end
-end
-      </code>
-    </pre>
-    <p>
-      Here, Similiar to Flash, a new instance of Session class is created with every request. With each request, the previous cookie is pulled from the request and set as the new cookie data. This cookie data persists as the <code style='font-size: 12px' class="language-ruby"> ControllerBase</code> calls <code style='font-size: 12px' class="language-ruby">Session#store_session</code> before each render
-    </p>
-  </div>
 </body>
+</div>
 </html>
