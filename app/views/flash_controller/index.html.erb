@@ -3,80 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <title>Flash Demo</title>
+  <link rel="stylesheet" href="assets/stylesheet.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="assets/prism.css">
   <script src='assets/prism.js'></script>
+  <script src='assets/script.js'></script>
 </head>
 <body>
-<h1>Flash Controller Demo</h1>
-<h2>This Demo showcases Flash, which is a rails features for storing data in cookies temporarily, for either one or two response cycles. This feature is generally used to display errors.</h2>
+<div class="main-head">
+  <div class='title'>
+    <h1>Flash Controller Demo</h1>
+    <h2>This Demo showcases Flash, which is a rails features for storing data in cookies temporarily, for either one or two response cycles. This feature is generally used to display errors.</h2>
+  </div>
 
-<div class='flash-now'>
-<h3>This is the flash now Demo. Any message you type here will remain in the cookies for one request-response cycle</h3>
-  <form action="/flash" method='post'>
-    <label> Flash Now Message
-      <input type="text" name='message-now'>
-    </label>
-    <input type="submit">
-  </form>
-  <% if @now %>
-  <h4>Your Flash message</h4>
-  <p><%= @now %></p>
-  <% end %>
-  <a href="/flash">Refresh once to reset message</a>
+<div class='fdemos'>
+  <div class='flash'>
+    <h3>This is the flash now Demo. Any message you type here will remain in the cookies for one request-response cycle</h3>
+    <form action="/flash" method='post'>
+          <label> Flash Now Message
+            <input type="text" name='message-now'>
+          </label>
+          <input type="submit">
+        </form>
+        <% if @now %>
+        <h4>Your Flash message:</h4>
+        <p><%= @now %></p>
+        <a href="/flash">Refresh once to reset message</a>
+        <% end %>
+  </div>
+
+  <div class='flash'>
+  <h3>This is the normal flash Demo. Any message you type here will remain in the cookies for two request-response cycles</h3>
+    <form action="/flash" method='post'>
+      <label> Flash Message
+        <input type="text" name='message'>
+      </label>
+      <input type="submit">
+    </form>
+    <% if @msg %>
+    <h4>Your Flash message:</h4>
+    <p><%= @msg %></p>
+    <a href="/flash">Refresh twice to reset message</a>
+    <% end %>
+  </div>
 </div>
 
-<div class='flash'>
-<h3>This is the normal flash Demo. Any message you type here will remain in the cookies for two request-response cycles</h3>
-  <form action="/flash" method='post'>
-    <label> Flash Message
-      <input type="text" name='message'>
-    </label>
-    <input type="submit">
-  </form>
-  <% if @msg %>
-  <h4>Your Flash message</h4>
-  <p><%= @msg %></p>
-  <% end %>
-  <a href="/flash">Refresh twice to reset message</a>
-</div>
+<div class='fcode'>
+    <h1>Source Code</h1>
+    <p>
+      Trails was created following OOP pricnciples, and therefore different parts of the framework are split into different Objects. In this case, flashing is done using a Flash Object.
+    </p>
+      <pre style="width: 50%;height: 400px;"><code class="language-ruby">
+    class Flash
+      attr_reader :now
+      def initialize(req)
+        cookie = req.cookies["_Trails_app"]
+        if cookie
+          @now = JSON.parse(cookie)
+        else
+          @now = {}
+        end
+        @flash = {}
+      end
 
-<div>
-<h1>Source Code</h1>
-<p>
-  Trails was created following OOP pricnciples, and therefore different parts of the framework are split into different Objects. In this case, flashing is done using a Flash Object.
-</p>
-  <pre style="width: 50%;height: 400px;"><code class="language-ruby">
-class Flash
-  attr_reader :now
-  def initialize(req)
-    cookie = req.cookies["_Trails_app"]
-    if cookie
-      @now = JSON.parse(cookie)
-    else
-      @now = {}
+      def [](key)
+        @now[key.to_s] || @flash[key.to_s]
+      end
+
+      def []=(key,value)
+        @flash[key.to_s] = value
+      end
+
+      def store_flash(res)
+        res.set_cookie('_Trails_app',value: @flash.to_json,path: '/')
+      end
+
     end
-    @flash = {}
-  end
 
-  def [](key)
-    @now[key.to_s] || @flash[key.to_s]
-  end
-
-  def []=(key,value)
-    @flash[key.to_s] = value
-  end
-
-  def store_flash(res)
-    res.set_cookie('_Trails_app',value: @flash.to_json,path: '/')
-  end
-
-end
-
-  </code></pre>
-  <p>
-    There are two instance variables in the Flash class. One for Now, and one for Flash. A new instance of Flash every time the user calls the #flash on COntrollerBase, which is the base controller class for all controller. A ControllerBase is created and destroyed after every single request-response cycle. This means the Flash instance is too created and destroyed after every response request cycle. This makes Flash now be available and self destruct after every response request cycle, but This also means normal Flash must persist somehow. To accomplish that, after every cycle, flash is stored inside the response cookie, and in the subsequent request, the flash is extracted out of the cookie. Since the <code style='font-size: 12px' class="language-ruby">Flash#[](key) </code>function is agnostic to whether the flash content is store in <code style='font-size: 12px' style='size: 15px' class="language-ruby">@now</code> or <code style='font-size: 12px' class="language-ruby">@flash</code>, the message in flash can be excracted by simply calling the key.
-  </p>
+      </code></pre>
+      <p>
+        There are two instance variables in the Flash class. One for Now, and one for Flash. A new instance of Flash every time the user calls the #flash on COntrollerBase, which is the base controller class for all controller. A ControllerBase is created and destroyed after every single request-response cycle. This means the Flash instance is too created and destroyed after every response request cycle. This makes Flash now be available and self destruct after every response request cycle, but This also means normal Flash must persist somehow. To accomplish that, after every cycle, flash is stored inside the response cookie, and in the subsequent request, the flash is extracted out of the cookie. Since the <code style='font-size: 12px' class="language-ruby">Flash#[](key) </code>function is agnostic to whether the flash content is store in <code style='font-size: 12px' style='size: 15px' class="language-ruby">@now</code> or <code style='font-size: 12px' class="language-ruby">@flash</code>, the message in flash can be excracted by simply calling the key.
+      </p>
+  </div>
 </div>
-  
 </body>
 </html>

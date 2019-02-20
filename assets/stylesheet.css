@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+*{
+  font-family: Roboto, Courier, monospace;
+  color: rgb(161, 159, 159);
+}
+body{
+  background-color: rgba(15, 12, 30);
+  margin: 0;
+}
+.icons {
+  position: absolute;
+  bottom: 0.1%;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  animation-name: footer;
+  animation-duration: 1s;
+  transition-timing-function: ease-out
+}
+
+@keyframes footer{
+  0%{transform: translate(0,120px) }
+  50% {transform: translate(0,60px)}
+  100% {transform: translate(0,-25px)}
+}
+
+ul.icons {
+  cursor: default;
+  list-style: none;
+  padding-left: 0;
+  list-style-type: none;
+  z-index: 2;
+  position: absolute;
+  bottom: 2%;
+}
+
+ul.icons li {
+  display: inline-block;
+  padding: 0 .75em 0 .75em;
+  font-size: 40px;
+}
+
+ul.icons li a {
+  color: rgb(161, 159, 159);
+}
+
+.main-head {
+  text-align: center;
+  padding: 5px;
+  margin: 0 12% 0 12%;
+  background-color: rgb(23, 16, 46);
+  min-height: 100vh;
+}
+.title{
+  animation-name: mainhead;
+  animation-duration: 1s;
+}
+@keyframes mainhead{
+   0%   {opacity: 0.1;}
+  100% {opacity: 1;}
+}
+
+.link-container{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 40px;
+}
+.link-container a{
+  text-decoration: none;
+  color: black;
+  animation-name: link;
+  animation-duration: 0.7s;
+}
+@keyframes link{
+  0%{transform: translate(0,20px);opacity: 0.3;}
+  
+}
+
+.link-box {
+  width: 30vh;
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(187, 67, 67);
+  padding: 10px;
+  border-radius: 8px;
+  margin: 10px;
+  font-size: 20px;
+}
+
+.fdemos{
+  display:flex;
+  width: 40vw;
+  flex-direction: column;
+  float: right;
+}
+.flash{
+  height: 40vh;
+  width: 36vw;
+}
+.flash a{
+  display: inline-block;
+  width: 8em;
+  height: 2.6em;
+  background-color: rgb(42, 156, 201);
+  border-radius: 8px;
+  text-align: center;
+  margin-top: 10px;
+  padding: 5px;
+  color: white;
+  text-decoration: none;
+}
+.flash input {
+  border-radius: 5px;
+  background-color: rgb(145, 30, 165);
+  border: 1px solid rgb(145, 30, 165);
+  color: white;
+}
+
+.fcode{
+  display: inline-block;
+}

@@ -36,10 +36,6 @@ class DBConnection
     instance.exec_params(*args)
   end
 
-  def self.last_insert_row_id
-    instance.last_insert_row_id
-  end
-
   private
 
   # def self.print_query(query, *interpolation_args)
