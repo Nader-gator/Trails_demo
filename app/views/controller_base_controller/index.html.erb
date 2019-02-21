@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>RecordKeeper Demo</title>
+  <title>Controller Base Demo</title>
   <link rel="stylesheet" href="assets/prism.css">
   <script src='assets/prism.js'></script>
   <link rel="stylesheet" href="assets/stylesheet.css">
@@ -21,7 +21,7 @@
   <br><br>
 
 <div class='fdemos'>
-<div class='flash' >
+<div class='flash'>
 <br>
 <p style='font-size: 20px;line-height:1.5em;'>ControllerBase class serves a simple function, make available methods to properly pass an html file to the Rack server to be rendered. It also keeps instances of <code>Session</code> and <code>Flash</code> classes. Another important function of this class is passing on the instance variable to <code>ERB</code> files to be rendered</p>
 <br>
@@ -31,7 +31,7 @@
 
 <div class='fcode'>
 
-<pre style= 'width: 40vw'>
+<pre >
 <code class="language-ruby;">
 class ControllerBase
   attr_reader :req, :res, :params,:session
@@ -63,7 +63,7 @@ class ControllerBase
 </code>
 </pre>
 </div>
-<p style='font-size: 20px;line-height:1.5em; border-top: 1px solid black;padding-top:15px'>When <code>#render</code> is called on the controller, the controller finds the html view corresponding to the controller name, and then generates an ERB file, and finally binds it to the local variables so that instance varibles can be used to render content passed on in the controllers</p>
+<p style='border-top: 1px solid black;padding-top:20px;font-size:20px;text-align:left;margin-left: 2em;'>When <code>#render</code> is called on the controller, the controller finds the html view corresponding to the controller name, and then generates an ERB file, and finally binds it to the local variables so that instance varibles can be used to render content passed on in the controllers</p>
 
 <div class='fcode'>
 <pre style= 'width: 60vw'>
@@ -85,7 +85,7 @@ class ControllerBase
 </code>
 </pre>
 </div>
-<p style='font-size: 20px;line-height:1.5em; border-top: 1px solid black;padding-top:15px' >finally, as it was indicated in the Flash and Session demos, before each render happens, <code>#redirect_response_prep</code> is called to store both Session cookies and Flash, and also raise errors for double renders</p>
+<p style='border-top: 1px solid black;padding-top:20px;font-size:20px;text-align:left;margin-left: 2em;' >finally, as it was indicated in the Flash and Session demos, before each render happens, <code>#redirect_response_prep</code> is called to store both Session cookies and Flash, and also raise errors for double renders</p>
 <div class='fcode'>
 
 <pre style= 'width: 50vw'>

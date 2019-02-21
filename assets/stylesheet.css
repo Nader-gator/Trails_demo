@@ -67,8 +67,8 @@ ul.icons li a {
   animation-duration: 2s;
 }
 @keyframes author{
-   0%   {opacity: 0;}
-   70%  {opacity: 0;}
+  0%   {opacity: 0;}
+  70%  {opacity: 0;}
   100% {opacity: 1;}
 }
 .link-container{
@@ -148,4 +148,17 @@ ul.icons li a {
 .wrapper{
   animation-name: mainhead;
   animation-duration: 1s;
+}
+
+.xbtn {
+  display: inline-block  !important;
+  /* width: 0.5em !important; */
+  /* height: 0.5em !important; */
+  font-size: 15px !important;
+  color: red !important;
+  background-color: transparent !important;
+  border: transparent !important;
+}
+.xbtn:hover {
+  cursor: pointer !important;
 }

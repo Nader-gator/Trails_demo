@@ -37,12 +37,23 @@
         </form>
     <% @todos.each do |todo,subtasks| %>
     <ul style='list-style: none; text-align: left'>
-      <li><h3><%= todo.title %></h4>
-        <h5><%= todo.body %></h5>
+        <form action="todos" method='post'>
+        <input type="hidden" value='delete' name='method'>
+        <input type="hidden" value=<%= todo.id %> name='id'>
+      <li><h3 style="font-size:25px;"><%= todo.title %> <input class='xbtn' type='submit' value="X"></h4>
+        <h5 style='margin-left: 15px;'><%= todo.body %></h5>
+        </form>
+        <h6 style="font-size: 14px; color: white;">
+        <%= "Subtasks:" unless subtasks.empty? %>
+        </h6>
         <ul style='list-style: none;'>
           <% subtasks.each do |subtask| %>
             <li>
-              <%= subtask.content %>
+            <form action="subtasks" method='post'>
+              <input type="hidden" value='delete' name='method'>
+              <input type="hidden" value=<%= subtask.id %> name='id'>
+              <%= subtask.content %> <input class='xbtn' type="submit" value='X'>
+            </form>
             </li>
           <% end %>
           <form action="subtasks" method='post'>

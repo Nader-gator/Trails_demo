@@ -138,6 +138,12 @@ class RecordKeeper
     self.id ? self.update : self.insert
   end
 
+  def delete
+    DBConnection.execute(<<-SQL,[self.id])
+      DELETE FROM #{self.class.table_name} WHERE id = $1;
+    SQL
+  end
+
   def self.where(params)
     insert_line = params.keys.map.with_index {|param,i| "#{param}= $#{i+1}"}.join("AND ")
     result = DBConnection.execute(<<-SQL,params.values)
