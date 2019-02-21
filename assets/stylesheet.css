@@ -64,11 +64,11 @@ ul.icons li a {
 }
 .author {
   animation-name: author;
-  animation-duration: 3s;
+  animation-duration: 2s;
 }
 @keyframes author{
    0%   {opacity: 0;}
-   90%  {opacity: 0;}
+   70%  {opacity: 0;}
   100% {opacity: 1;}
 }
 .link-container{
