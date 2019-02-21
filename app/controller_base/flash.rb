@@ -1,5 +1,5 @@
 require 'json'
-require 'byebug'
+
 class Flash
   attr_reader :now
   def initialize(req)
