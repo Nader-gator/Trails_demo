@@ -3,6 +3,7 @@ require 'json'
 class Flash
   attr_reader :now
   def initialize(req)
+    @req = req
     cookie = req.cookies["_Trails_app"]
     if cookie
       @now = JSON.parse(cookie)
@@ -21,7 +22,7 @@ class Flash
   end
 
   def store_flash(res)
-    res.set_cookie('_Trails_app',value: @flash.to_json,path: '/')
+    res.set_cookie('_Trails_app',value: @flash.to_json,path: @req.path)
   end
 
 end

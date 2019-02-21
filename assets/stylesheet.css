@@ -55,7 +55,7 @@ ul.icons li a {
   min-height: 100vh;
 }
 .title{
-  animation-name: mainhead;
+  /* animation-name: mainhead; */
   animation-duration: 1s;
 }
 @keyframes mainhead{
@@ -81,7 +81,7 @@ ul.icons li a {
   text-decoration: none;
   color: black;
   animation-name: link;
-  animation-duration: 0.7s;
+  animation-duration: 0.4s;
 }
 @keyframes link{
   0%{transform: translate(0,20px);opacity: 0.3;}
@@ -146,8 +146,8 @@ ul.icons li a {
 }
 
 .wrapper{
-  animation-name: mainhead;
-  animation-duration: 1s;
+  /* animation-name: mainhead;
+  animation-duration: 0.1s; */
 }
 
 .xbtn {
