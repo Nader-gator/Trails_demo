@@ -106,7 +106,8 @@ ul.icons li a {
   width: 26vw;
   flex-direction: column;
   float: right;
-  margin-right: 20px;
+  margin-left: 2%;
+  margin-right: 5%;
 }
 .flash{
   height: 40vh;
