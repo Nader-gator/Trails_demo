@@ -34,7 +34,7 @@
 
   <% if @msg.count > 0 %>
     <h4 style="color: white;">Here are your cookie messages</h4>
-    <ul>
+    <ul style='padding: 0'>
     <% @msg.each do |text| %>
       <li><%= text %></li>
     <% end %>
