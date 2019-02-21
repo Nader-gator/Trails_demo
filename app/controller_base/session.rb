@@ -1,8 +1,10 @@
 require 'json'
+require 'byebug'
 
 class Session
 
   def initialize(req)
+    @req = req
     cookie = req.cookies['_Trails_app']
 
     if cookie
@@ -21,7 +23,8 @@ class Session
   end
 
   def store_session(res)
-    cookie = {path: '/cookies', value: @cookie_data.to_json,expires: Time.now+24*60*60*14}
-    res.set_cookie("_Trails_app",cookie)
+    cookie = {path: @req.path,
+      value: @cookie_data.to_json,expire_after: Time.now+24*60*60*14}
+    res.set_cookie('_Trails_app',cookie)
   end
 end
