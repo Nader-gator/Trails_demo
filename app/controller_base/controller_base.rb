@@ -9,10 +9,10 @@ class ControllerBase
   attr_reader :req, :res, :params,:session
   attr_accessor :response_built
 
-  def initialize(req, res,params = {})
+  def initialize(req, res)
     @req, @res = req, res
     @response_built = false
-    @params = params.merge(req.params)
+    @params = req.params
   end
 
   def already_built_response?

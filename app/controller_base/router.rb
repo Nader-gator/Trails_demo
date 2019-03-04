@@ -1,4 +1,3 @@
-
 class Route
   attr_reader :pattern, :http_method, :controller_class, :action_name
 
@@ -12,10 +11,7 @@ class Route
   end
 
   def run(req, res)
-    data = @pattern.match(req.path)
-
-    params = Hash[data.names.zip(data.captures)]
-    controller = controller_class.new(req,res,params)
+    controller = controller_class.new(req,res)
     controller.invoke_action(self.action_name)
   end
 end
