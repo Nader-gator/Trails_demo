@@ -3,7 +3,7 @@ require 'uri'
 # PRINT_QUERIES = ENV['PRINT_QUERIES'] == 'true'
 
 class DBConnection
-  ENV["RACK_ENV"] = ENV["RACK_ENV"] || 'test'
+  ENV["RACK_ENV"] ||= 'test'
   def self.open(dbname)
 
     if ENV["RACK_ENV"] == "production"
